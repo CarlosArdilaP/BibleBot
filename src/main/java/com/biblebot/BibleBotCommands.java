@@ -15,7 +15,8 @@ public class BibleBotCommands {
     public static void register() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
             dispatcher.register(Commands.literal("bible")
-                .requires(source -> source.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
+                .requires(source -> !source.getServer().isDedicatedServer()
+                        || source.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
                 .then(Commands.literal("pause").executes(BibleBotCommands::pause))
                 .then(Commands.literal("resume").executes(BibleBotCommands::resume))
                 .then(Commands.literal("reload").executes(BibleBotCommands::reload))
