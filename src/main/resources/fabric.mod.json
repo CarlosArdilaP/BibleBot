@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "biblebot",
+  "version": "${version}",
+  "name": "BibleBot",
+  "description": "Envía versículos de la Biblia Católica al chat del servidor periódicamente.",
+  "authors": [
+    "BibleBot"
+  ],
+  "contact": {},
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.biblebot.BibleBot"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.19.2",
+    "fabric-api": "*",
+    "minecraft": "26.1.2"
+  }
+}
