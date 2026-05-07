@@ -1,0 +1,8 @@
+{
+  "cmd.pause.already_paused": "BibleBot is already paused.",
+  "cmd.pause.success": "BibleBot has been paused.",
+  "cmd.resume.already_active": "BibleBot is already active.",
+  "cmd.resume.success": "BibleBot has been resumed.",
+  "cmd.reload.success": "Configuration reloaded. Language: {0} | Interval: {1} minute(s).",
+  "cmd.reload.error": "Could not reload the configuration. Current configuration is kept. Check the console."
+}

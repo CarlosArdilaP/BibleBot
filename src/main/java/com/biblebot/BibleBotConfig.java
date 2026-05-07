@@ -12,6 +12,9 @@ import java.nio.file.Path;
 
 public class BibleBotConfig {
 
+    @SerializedName("language")
+    public String language = "es";
+
     @SerializedName("interval_minutes")
     public int intervalMinutes = 5;
 
@@ -32,6 +35,14 @@ public class BibleBotConfig {
         } catch (IOException e) {
             BibleBot.LOGGER.error("Error al leer biblebot.json, usando valores por defecto", e);
             return new BibleBotConfig();
+        }
+    }
+
+    public static BibleBotConfig loadStrict() throws IOException {
+        try (Reader reader = new InputStreamReader(Files.newInputStream(CONFIG_PATH), StandardCharsets.UTF_8)) {
+            BibleBotConfig cfg = GSON.fromJson(reader, BibleBotConfig.class);
+            if (cfg == null) throw new IOException("biblebot.json está vacío o malformado");
+            return cfg;
         }
     }
 

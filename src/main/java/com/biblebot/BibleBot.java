@@ -12,7 +12,10 @@ public class BibleBot implements ModInitializer {
     @Override
     public void onInitialize() {
         CONFIG = BibleBotConfig.load();
-        LOGGER.info("BibleBot inicializado — intervalo: {} minuto(s)", CONFIG.intervalMinutes);
+        BibleBotLang.load(CONFIG.language);
+        BibleVerseProvider.load(CONFIG.language);
+        LOGGER.info("BibleBot inicializado — idioma: {}, intervalo: {} minuto(s)", CONFIG.language, CONFIG.intervalMinutes);
         BibleBotScheduler.register();
+        BibleBotCommands.register();
     }
 }

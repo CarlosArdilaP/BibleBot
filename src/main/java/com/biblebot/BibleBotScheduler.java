@@ -6,21 +6,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.MinecraftServer;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public class BibleBotScheduler {
 
-    // Todas las referencias directas o indirectas a las tres Personas de la Trinidad
-    // El orden importa: las frases más largas van primero para que no sean consumidas
-    // por términos más cortos (ej. "Espíritu Santo" antes que "Espíritu").
-    private static final Pattern TRINITY_PATTERN = Pattern.compile(
-            "Hijo del hombre|Espíritu Santo|Jesucristo" +
-            "|Dios|Señor|Cristo|Jesús|Padre|Hijo|Espíritu" +
-            "|Altísimo|Omnipotente|Verbo|Cordero"
-    );
-
     private static int tickCounter = 0;
+    private static volatile boolean paused = false;
+
+    public static boolean isPaused() { return paused; }
+    public static void pause()       { paused = true; }
+    public static void resume()      { paused = false; }
 
     public static void register() {
         ServerTickEvents.END_SERVER_TICK.register(BibleBotScheduler::onTick);
@@ -29,6 +22,7 @@ public class BibleBotScheduler {
     }
 
     private static void onTick(MinecraftServer server) {
+        if (paused) return;
         if (server.getPlayerList().getPlayers().isEmpty()) return;
 
         tickCounter++;
@@ -54,25 +48,29 @@ public class BibleBotScheduler {
         BibleBot.LOGGER.info("[BibleBot] {}", verse.reference());
     }
 
-    // Divide el texto del versículo y aplica dorado a cada referencia trinitaria.
+    // Parses <gold>...</gold> tags embedded in the verse text and applies gold/white coloring.
     private static MutableComponent colorizeText(String text) {
         MutableComponent result = Component.empty();
-        Matcher matcher = TRINITY_PATTERN.matcher(text);
-        int lastEnd = 0;
-
-        while (matcher.find()) {
-            if (matcher.start() > lastEnd) {
-                result.append(Component.literal(text.substring(lastEnd, matcher.start()))
-                        .withStyle(ChatFormatting.WHITE));
+        final String OPEN = "<gold>";
+        final String CLOSE = "</gold>";
+        int i = 0;
+        while (i < text.length()) {
+            int tagStart = text.indexOf(OPEN, i);
+            if (tagStart == -1) {
+                result.append(Component.literal(text.substring(i)).withStyle(ChatFormatting.WHITE));
+                break;
             }
-            result.append(Component.literal(matcher.group()).withStyle(ChatFormatting.GOLD));
-            lastEnd = matcher.end();
+            if (tagStart > i) {
+                result.append(Component.literal(text.substring(i, tagStart)).withStyle(ChatFormatting.WHITE));
+            }
+            int tagEnd = text.indexOf(CLOSE, tagStart + OPEN.length());
+            if (tagEnd == -1) {
+                result.append(Component.literal(text.substring(tagStart + OPEN.length())).withStyle(ChatFormatting.GOLD));
+                break;
+            }
+            result.append(Component.literal(text.substring(tagStart + OPEN.length(), tagEnd)).withStyle(ChatFormatting.GOLD));
+            i = tagEnd + CLOSE.length();
         }
-
-        if (lastEnd < text.length()) {
-            result.append(Component.literal(text.substring(lastEnd)).withStyle(ChatFormatting.WHITE));
-        }
-
         return result;
     }
 }

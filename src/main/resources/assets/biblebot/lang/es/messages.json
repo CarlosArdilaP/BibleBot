@@ -1,0 +1,8 @@
+{
+  "cmd.pause.already_paused": "BibleBot ya está detenido.",
+  "cmd.pause.success": "BibleBot se ha detenido.",
+  "cmd.resume.already_active": "BibleBot ya está activo.",
+  "cmd.resume.success": "BibleBot se ha reanudado.",
+  "cmd.reload.success": "Configuración recargada. Idioma: {0} | Intervalo: {1} minuto(s).",
+  "cmd.reload.error": "No se pudo recargar la configuración. Se mantiene la configuración actual. Revisa la consola."
+}
