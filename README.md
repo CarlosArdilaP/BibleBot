@@ -75,7 +75,7 @@ All commands require **operator** level (gamemaster or higher).
 ./gradlew build
 ```
 
-The output JAR is at `build/libs/biblebot-1.0.0.jar`.
+The output JAR is at `build/libs/biblebot-{version}.jar`.
 
 ## License
 
